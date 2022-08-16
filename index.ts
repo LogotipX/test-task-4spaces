@@ -110,9 +110,6 @@ class ShopImpl implements Shop {
       } else return false;
     });
 
-    console.log("sortedShop", sortedShop.length, sortedShop);
-
-    console.log("sortedShop", sortedShop.length, sortedShop);
     sortedShop = sortedShop.slice(
       0,
       sortedShop.length > 10 ? 10 : sortedShop.length
@@ -123,8 +120,6 @@ class ShopImpl implements Shop {
         newList.push(product.name);
       }
     });
-
-    console.log("newList", newList.length, newList);
 
     return newList;
   }
