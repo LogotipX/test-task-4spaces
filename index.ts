@@ -98,19 +98,21 @@ class ShopImpl implements Shop {
     let sortedShop = Shop.slice(0, Shop.length);
     let newList: string[] = [];
 
-    sortedShop = sortedShop.map((product) => {
-      if (product && product.producer.includes(searchString)) {
-        return product;
-      }
-    });
-    
     sortedShop.sort((prod1, prod2) => {
       if (prod1 && prod2) {
         return prod1.producer > prod2.producer ? 1 : -1;
-      } else return - 1;
+      } else return -1;
     });
 
-    // console.log("sortedShop", sortedShop);
+    sortedShop = sortedShop.filter((product) => {
+      if (product && product.producer.includes(searchString)) {
+        return product;
+      } else return false;
+    });
+
+    console.log("sortedShop", sortedShop.length, sortedShop);
+
+    console.log("sortedShop", sortedShop.length, sortedShop);
     sortedShop = sortedShop.slice(
       0,
       sortedShop.length > 10 ? 10 : sortedShop.length
