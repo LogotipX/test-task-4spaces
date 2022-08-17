@@ -43,16 +43,14 @@ class ShopImpl implements Shop {
     let start = 0;
     let end = this.shop.length - 1;
 
-    if (end === 0) return -1;
-
     while (start <= end) {
       let mid = Math.floor((start + end) / 2);
 
-      if (mid < Number(id)) {
+      if (Number(this.shop[mid]?.id) < Number(id)) {
         start = mid + 1;
-      } else if (mid > Number(id)) {
+      } else if (Number(this.shop[mid]?.id) > Number(id)) {
         end = mid - 1;
-      } else if (mid === Number(id)) {
+      } else if (Number(this.shop[mid]?.id) === Number(id)) {
         return mid;
       } else {
         return -1;
@@ -272,25 +270,4 @@ function assert(condition: boolean) {
   }
 }
 
-function start() {
-  const timeAdd = Date.now();
-  const shop = new ShopImpl();
-
-  const count = 10000;
-  for (let i = 0; i < count; i++) {
-    assert(shop.addNewProduct({ id: `${i}`, name: "1", producer: "Lex" }));
-    // test(new ShopImpl());
-  }
-  console.log("add time", Date.now() - timeAdd);
-
-  shop.shopSort();
-
-  const timeDelete = Date.now();
-  for (let i = count - 1; i > 0; i--) {
-    assert(shop.deleteProduct(`${i}`));
-    // test(new ShopImpl());
-  }
-  console.log("delete time", Date.now() - timeDelete);
-}
-
-start();
+test(new ShopImpl());
