@@ -39,30 +39,47 @@ interface Shop {
 class ShopImpl implements Shop {
   shop: Array<Product | void> = []; // Products list
 
-  isContainsId(id: string): number {
-    for (let i = 0; i < this.shop.length; i++) {
-      if (this.shop[i]?.id === id) {
-        return i;
+  searchContaisId(id: string): number {
+    let start = 0;
+    let end = this.shop.length - 1;
+
+    if (end === 0) return -1;
+
+    while (start <= end) {
+      let mid = Math.floor((start + end) / 2);
+
+      if (mid < Number(id)) {
+        start = mid + 1;
+      } else if (mid > Number(id)) {
+        end = mid - 1;
+      } else if (mid === Number(id)) {
+        return mid;
+      } else {
+        return -1;
       }
     }
-  
+
     return -1;
   }
-  
 
-  addNewProduct = (product: Product): boolean => {
+  shopSort() {
+    this.shop.sort((arg1, arg2) => Number(arg1?.id) - Number(arg2?.id));
+  }
+
+  addNewProduct(product: Product): boolean {
     // TODO: your implementation goes here
-    if (this.isContainsId(product.id) < 0) {
+    const hasSameProduct = this.searchContaisId(product.id);
+    if (hasSameProduct < 0) {
       this.shop.push(product);
       return true;
     }
 
     return false;
-  };
+  }
 
   deleteProduct(id: string): boolean {
     // TODO: your implementation goes here
-    const hasSameProduct = this.isContainsId(id);
+    const hasSameProduct = this.searchContaisId(id);
     if (hasSameProduct >= 0) {
       this.shop.splice(hasSameProduct, 1);
       return true;
@@ -255,4 +272,25 @@ function assert(condition: boolean) {
   }
 }
 
-test(new ShopImpl());
+function start() {
+  const timeAdd = Date.now();
+  const shop = new ShopImpl();
+
+  const count = 10000;
+  for (let i = 0; i < count; i++) {
+    assert(shop.addNewProduct({ id: `${i}`, name: "1", producer: "Lex" }));
+    // test(new ShopImpl());
+  }
+  console.log("add time", Date.now() - timeAdd);
+
+  shop.shopSort();
+
+  const timeDelete = Date.now();
+  for (let i = count - 1; i > 0; i--) {
+    assert(shop.deleteProduct(`${i}`));
+    // test(new ShopImpl());
+  }
+  console.log("delete time", Date.now() - timeDelete);
+}
+
+start();
