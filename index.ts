@@ -37,21 +37,34 @@ interface Shop {
 }
 
 class ShopImpl implements Shop {
-  addNewProduct(product: Product): boolean {
+  shop: Array<Product | void> = []; // Products list
+
+  isContainsId(id: string): number {
+    for (let i = 0; i < this.shop.length; i++) {
+      if (this.shop[i]?.id === id) {
+        return i;
+      }
+    }
+  
+    return -1;
+  }
+  
+
+  addNewProduct = (product: Product): boolean => {
     // TODO: your implementation goes here
-    if (isContainsId(Shop, product.id) < 0) {
-      Shop.push(product);
+    if (this.isContainsId(product.id) < 0) {
+      this.shop.push(product);
       return true;
     }
 
     return false;
-  }
+  };
 
   deleteProduct(id: string): boolean {
     // TODO: your implementation goes here
-    const hasSameProduct = isContainsId(Shop, id);
+    const hasSameProduct = this.isContainsId(id);
     if (hasSameProduct >= 0) {
-      Shop.splice(hasSameProduct, 1);
+      this.shop.splice(hasSameProduct, 1);
       return true;
     }
 
@@ -63,8 +76,8 @@ class ShopImpl implements Shop {
     const productNames: string[] = [];
     const dubblicateProductNamesIdxs = new Set();
 
-    for (let i = 0; i < Shop.length && list.length < 10; i++) {
-      const product = Shop[i];
+    for (let i = 0; i < this.shop.length && list.length < 10; i++) {
+      const product = this.shop[i];
       if (product?.name.includes(searchString)) {
         list.push(product);
         productNames.push(product.name);
@@ -95,7 +108,7 @@ class ShopImpl implements Shop {
 
   listProductsByProducer(searchString: string): string[] {
     // TODO: your implementation goes here
-    let sortedShop = Shop.slice(0, Shop.length);
+    let sortedShop = this.shop.slice(0, this.shop.length);
     let newList: string[] = [];
 
     sortedShop.sort((prod1, prod2) => {
@@ -123,18 +136,6 @@ class ShopImpl implements Shop {
 
     return newList;
   }
-}
-
-let Shop: Array<Product | void> = []; // Products list
-
-function isContainsId(list: Array<Product | void>, id: string): number {
-  for (let i = 0; i < list.length; i++) {
-    if (list[i]?.id === id) {
-      return i;
-    }
-  }
-
-  return -1;
 }
 
 function test(shop: Shop) {
