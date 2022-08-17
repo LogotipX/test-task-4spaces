@@ -39,23 +39,23 @@ interface Shop {
 class ShopImpl implements Shop {
   addNewProduct(product: Product): boolean {
     // TODO: your implementation goes here
-    if (isContainsId(Shop, product.id) !== false) {
-      return false;
+    if (isContainsId(Shop, product.id) < 0) {
+      Shop.push(product);
+      return true;
     }
 
-    Shop.push(product);
-
-    return true;
+    return false;
   }
 
   deleteProduct(id: string): boolean {
     // TODO: your implementation goes here
     const hasSameProduct = isContainsId(Shop, id);
-    if (typeof hasSameProduct === "number") {
+    if (hasSameProduct >= 0) {
       Shop.splice(hasSameProduct, 1);
-    } else return false;
+      return true;
+    }
 
-    return true;
+    return false;
   }
 
   listProductsByName(searchString: string): string[] {
@@ -127,17 +127,14 @@ class ShopImpl implements Shop {
 
 let Shop: Array<Product | void> = []; // Products list
 
-function isContainsId(
-  list: Array<Product | void>,
-  id: string
-): number | boolean {
+function isContainsId(list: Array<Product | void>, id: string): number {
   for (let i = 0; i < list.length; i++) {
     if (list[i]?.id === id) {
       return i;
     }
   }
 
-  return false;
+  return -1;
 }
 
 function test(shop: Shop) {
