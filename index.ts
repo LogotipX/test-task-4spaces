@@ -249,23 +249,4 @@ function assert(condition: boolean) {
   }
 }
 
-// test(new ShopImpl());
-
-function start() {
-  const shop = new ShopImpl();
-  const timeAdd = Date.now();
-  const count = 10000;
-  for (let i = 0; i < count; i++) {
-    assert(shop.addNewProduct({ id: String(i), name: "1", producer: "Lex" }));
-    // test(new ShopImpl());
-  }
-  console.log(Date.now() - timeAdd);
-
-  const timeDelete = Date.now();
-  for (let i = 0; i < count; i++) {
-    assert(shop.deleteProduct(String(i)));
-  }
-  console.log(Date.now() - timeDelete);
-}
-
-start();
+test(new ShopImpl());
