@@ -37,13 +37,13 @@ interface Shop {
 }
 
 class ShopImpl implements Shop {
-  shop = new Map<string, Product>(); // Products list
+  shop: { [key: string]: Product } = {}; // Products list
 
   addNewProduct(product: Product): boolean {
     // TODO: your implementation goes here
-    const hasSameProduct = this.shop.get(product.id);
+    const hasSameProduct = this.shop[product.id];
     if (hasSameProduct === undefined) {
-      this.shop.set(product.id, product);
+      this.shop[product.id] = product;
       return true;
     }
 
@@ -52,16 +52,23 @@ class ShopImpl implements Shop {
 
   deleteProduct(id: string): boolean {
     // TODO: your implementation goes here
-    return this.shop.delete(id);
+    if (this.shop[id]) {
+      delete this.shop[id];
+      return true;
+    }
+
+    return false;
   }
 
   listProductsByName(searchString: string): string[] {
-    const shopCopyArr: Product[] = Array.from(this.shop.values());
+    const shopCopyArr: Product[] = Object.keys(this.shop).map(
+      (key) => this.shop[key]
+    );
     const list: Product[] = [];
     const productNames: string[] = [];
     const dubblicateProductNamesIdxs = new Set();
 
-    for (let i = 0; i < this.shop.size && list.length < 10; i++) {
+    for (let i = 0; i < shopCopyArr.length && list.length < 10; i++) {
       const product = shopCopyArr[i];
       if (product?.name.includes(searchString)) {
         list.push(product);
@@ -93,7 +100,9 @@ class ShopImpl implements Shop {
 
   listProductsByProducer(searchString: string): string[] {
     // TODO: your implementation goes here
-    let sortedShop: Product[] = Array.from(this.shop.values());
+    let sortedShop: Product[] = Object.keys(this.shop).map(
+      (key) => this.shop[key]
+    );
     let newList: string[] = [];
 
     sortedShop.sort((prod1, prod2) => {
@@ -240,4 +249,23 @@ function assert(condition: boolean) {
   }
 }
 
-test(new ShopImpl());
+// test(new ShopImpl());
+
+function start() {
+  const shop = new ShopImpl();
+  const timeAdd = Date.now();
+  const count = 10000;
+  for (let i = 0; i < count; i++) {
+    assert(shop.addNewProduct({ id: String(i), name: "1", producer: "Lex" }));
+    // test(new ShopImpl());
+  }
+  console.log(Date.now() - timeAdd);
+
+  const timeDelete = Date.now();
+  for (let i = 0; i < count; i++) {
+    assert(shop.deleteProduct(String(i)));
+  }
+  console.log(Date.now() - timeDelete);
+}
+
+start();
