@@ -37,38 +37,13 @@ interface Shop {
 }
 
 class ShopImpl implements Shop {
-  shop: Array<Product | void> = []; // Products list
-
-  searchContaisId(id: string): number {
-    let start = 0;
-    let end = this.shop.length - 1;
-
-    while (start <= end) {
-      let mid = Math.floor((start + end) / 2);
-
-      if (Number(this.shop[mid]?.id) < Number(id)) {
-        start = mid + 1;
-      } else if (Number(this.shop[mid]?.id) > Number(id)) {
-        end = mid - 1;
-      } else if (Number(this.shop[mid]?.id) === Number(id)) {
-        return mid;
-      } else {
-        return -1;
-      }
-    }
-
-    return -1;
-  }
-
-  shopSort() {
-    this.shop.sort((arg1, arg2) => Number(arg1?.id) - Number(arg2?.id));
-  }
+  shop = new Map<string, Product>(); // Products list
 
   addNewProduct(product: Product): boolean {
     // TODO: your implementation goes here
-    const hasSameProduct = this.searchContaisId(product.id);
-    if (hasSameProduct < 0) {
-      this.shop.push(product);
+    const hasSameProduct = this.shop.get(product.id);
+    if (hasSameProduct === undefined) {
+      this.shop.set(product.id, product);
       return true;
     }
 
@@ -77,22 +52,17 @@ class ShopImpl implements Shop {
 
   deleteProduct(id: string): boolean {
     // TODO: your implementation goes here
-    const hasSameProduct = this.searchContaisId(id);
-    if (hasSameProduct >= 0) {
-      this.shop.splice(hasSameProduct, 1);
-      return true;
-    }
-
-    return false;
+    return this.shop.delete(id);
   }
 
   listProductsByName(searchString: string): string[] {
+    const shopCopyArr: Product[] = Array.from(this.shop.values());
     const list: Product[] = [];
     const productNames: string[] = [];
     const dubblicateProductNamesIdxs = new Set();
 
-    for (let i = 0; i < this.shop.length && list.length < 10; i++) {
-      const product = this.shop[i];
+    for (let i = 0; i < this.shop.size && list.length < 10; i++) {
+      const product = shopCopyArr[i];
       if (product?.name.includes(searchString)) {
         list.push(product);
         productNames.push(product.name);
@@ -123,7 +93,7 @@ class ShopImpl implements Shop {
 
   listProductsByProducer(searchString: string): string[] {
     // TODO: your implementation goes here
-    let sortedShop = this.shop.slice(0, this.shop.length);
+    let sortedShop: Product[] = Array.from(this.shop.values());
     let newList: string[] = [];
 
     sortedShop.sort((prod1, prod2) => {
